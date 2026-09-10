@@ -88,13 +88,22 @@ function fadeOut(){
 
 window.onload = fadeOut;
 
+async function apiRequest(url, options = {}) {
+  const response = await fetch(url, { ...options, credentials: 'same-origin' });
+  if (response.status === 401) {
+    window.location.replace('/login.html');
+    return null;
+  }
+  return response;
+}
+
 async function addCartItem(name, price) {
-  const response = await fetch('/api/cart', {
+  const response = await apiRequest('/api/cart', {
     method: 'POST',
-    credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, price })
   });
+  if (!response) return null;
   const result = await response.json();
   if (!response.ok) throw new Error(result.error);
   return result;
@@ -105,7 +114,8 @@ async function addToCart(button) {
   const name = box.querySelector('h3').textContent.trim();
   const priceElement = box.querySelector('.price') || box.querySelector('span');
   const price = priceElement ? priceElement.textContent.replace(/[^\d.]/g, '') : 0;
-  await addCartItem(name, price);
+  const result = await addCartItem(name, price);
+  if (!result) return;
   alert(`${name} added to cart`);
 }
 
@@ -129,8 +139,10 @@ document.querySelectorAll('.home .slide .btn').forEach(button => {
     const name = slide.querySelector('h3').textContent.trim();
 
     try {
-      await addCartItem(name, 250);
-      const response = await fetch('/api/cart', { credentials: 'same-origin' });
+      const added = await addCartItem(name, 250);
+      if (!added) return;
+      const response = await apiRequest('/api/cart');
+      if (!response) return;
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
       showCartPopup(result.items);
@@ -142,7 +154,8 @@ document.querySelectorAll('.home .slide .btn').forEach(button => {
 
 document.querySelector('.fa-shopping-cart').addEventListener('click', async event => {
   event.preventDefault();
-  const response = await fetch('/api/cart', { credentials: 'same-origin' });
+  const response = await apiRequest('/api/cart');
+  if (!response) return;
   const result = await response.json();
   if (!response.ok) return alert(result.error);
   showCartPopup(result.items);
@@ -216,12 +229,12 @@ function showCartPopup(items) {
     const row = button.closest('.cart-popup-item');
     const currentQuantity = Number(row.querySelector('.cart-popup-quantity').textContent);
     const quantity = button.dataset.cartAction === 'increase' ? currentQuantity + 1 : currentQuantity - 1;
-    const response = await fetch('/api/cart', {
+    const response = await apiRequest('/api/cart', {
       method: 'PATCH',
-      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: row.dataset.itemName, quantity })
     });
+    if (!response) return;
     const result = await response.json();
     if (!response.ok) return alert(result.error);
     showCartPopup(result.items);
@@ -231,14 +244,14 @@ function showCartPopup(items) {
 
 document.querySelector('.order form').addEventListener('submit', async event => {
   event.preventDefault();
-  const cartResponse = await fetch('/api/cart', { credentials: 'same-origin' });
+  const cartResponse = await apiRequest('/api/cart');
+  if (!cartResponse) return;
   const cart = await cartResponse.json();
   const orderName = document.querySelector('#order-name').value.trim();
   const orderQuantity = Number(document.querySelector('#order-quantity').value) || 1;
   const items = cart.items.length ? cart.items : [{ name: orderName, quantity: orderQuantity, price: 0 }];
-  const response = await fetch('/api/orders', {
+  const response = await apiRequest('/api/orders', {
     method: 'POST',
-    credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       customerName: document.querySelector('.order form input[placeholder="enter your name"]').value.trim(),
@@ -249,6 +262,7 @@ document.querySelector('.order form').addEventListener('submit', async event => 
       items
     })
   });
+  if (!response) return;
   const result = await response.json();
   if (!response.ok) return alert(result.error);
   event.target.reset();

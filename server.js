@@ -37,6 +37,9 @@ app.use(session(sessionOptions));
 
 function requireAuth(req, res, next) {
     if (!req.session.user) {
+        if (req.get('Accept')?.includes('text/html')) {
+            return res.redirect('/login.html');
+        }
         return res.status(401).json({ error: 'Authentication required' });
     }
     next();
@@ -104,7 +107,10 @@ app.post('/api/auth/logout', requireAuth, (req, res) => {
 });
 
 app.get('/api/auth/me', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Not authenticated' });
+    if (!req.session.user) {
+        if (req.get('Accept')?.includes('text/html')) return res.redirect('/login.html');
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
     res.json({ user: req.session.user });
 });
 
