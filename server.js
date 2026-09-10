@@ -3,20 +3,37 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 const bcrypt = require('bcryptjs');
 const pool = require('./db');
 
 const app = express();
 const publicDir = __dirname;
 
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
+const sessionOptions = {
     secret: process.env.SESSION_SECRET || 'bitty-bites-development-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, sameSite: 'lax' }
-}));
+    cookie: { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' }
+};
+
+if (process.env.NODE_ENV === 'production') {
+    sessionOptions.store = new MySQLStore({
+        host: process.env.DB_HOST || 'localhost',
+        port: Number(process.env.DB_PORT || 3306),
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_NAME || 'bitty_bites'
+    });
+}
+
+app.use(session(sessionOptions));
 
 function requireAuth(req, res, next) {
     if (!req.session.user) {
@@ -154,4 +171,9 @@ app.post('/api/orders', requireAuth, async (req, res) => {
 });
 
 const port = Number(process.env.PORT || 3000);
-app.listen(port, () => console.log(`Bitty Bites server running at http://localhost:${port}`));
+
+if (require.main === module) {
+    app.listen(port, () => console.log(`Bitty Bites server running at http://localhost:${port}`));
+}
+
+module.exports = app;
