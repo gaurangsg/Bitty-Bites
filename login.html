@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>BittyBites - Login</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* Login/Signup page uses the same color grading tokens as the main site */
+    :root{
+      --green:#27ae60;
+      --black:#192a56;
+      --light-color:#666;
+      --box-shadow:0 .5rem 1.5rem rgba(0,0,0,.1);
+    }
+
+    .auth-page{
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9rem 1rem 3rem;
+      background: #fff;
+    }
+
+    .auth-box{
+      width: 100%;
+      max-width: 55rem;
+      background:#fff;
+      border-radius: .5rem;
+      border:.1rem solid rgba(0,0,0,.2);
+      box-shadow: var(--box-shadow);
+      padding: 2.5rem 2rem;
+    }
+
+    .auth-title{
+      text-align:center;
+      color: var(--green);
+      font-size: 2.2rem;
+      padding-bottom: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .auth-subtitle{
+      text-align:center;
+      color: var(--light-color);
+      font-size: 1.5rem;
+      padding-bottom: 2.2rem;
+    }
+
+    .auth-form{
+      display:flex;
+      flex-direction:column;
+      gap: 1.2rem;
+    }
+
+    .auth-field label{
+      display:block;
+      font-size: 1.5rem;
+      color: var(--light-color);
+      margin-bottom: .6rem;
+    }
+
+    .auth-field input{
+      width: 100%;
+      background:#eee;
+      border-radius: .5rem;
+      padding: 1.2rem 1rem;
+      font-size: 1.6rem;
+      color: var(--black);
+      text-transform: none;
+      outline: none;
+      border: .1rem solid transparent;
+      transition: all .2s linear;
+    }
+
+    .auth-field input:focus{
+      border:.1rem solid var(--green);
+    }
+
+    .auth-actions{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: .2rem;
+    }
+
+    .auth-link{
+      font-size: 1.5rem;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .auth-link:hover{
+      color: var(--green);
+      text-decoration: underline;
+    }
+
+    .auth-btn{
+      margin-top: .5rem;
+      width: 100%;
+      text-align:center;
+      font-size: 1.7rem;
+      color:#fff;
+      background: var(--black);
+      border-radius: .5rem;
+      cursor:pointer;
+      padding:.9rem 2.5rem;
+      transition: all .2s linear;
+    }
+
+    .auth-btn:hover{
+      background: var(--green);
+      letter-spacing: .1rem;
+    }
+
+    .auth-footer{
+      text-align:center;
+      padding-top: 1.6rem;
+      color: var(--light-color);
+      font-size: 1.5rem;
+    }
+
+    .auth-footer a{
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .auth-footer a:hover{
+      text-decoration: underline;
+    }
+
+    /* loader placeholder to match site behavior (optional) */
+    .loader-container{
+      position: fixed;
+      top:0; left:0;
+      height:100%;
+      width:100%;
+      z-index: 10000;
+      background:#fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .loader-container img{ width:35rem; }
+    .loader-container.fade-out{ top:-110%; opacity:0; }
+
+    @media (max-width:450px){
+      .auth-box{ padding: 2rem 1.4rem; }
+      .auth-page{ padding-top: 8.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- loader -->
+  <div class="loader-container">
+    <img src="images/loader.gif" alt="" />
+  </div>
+
+  <section class="auth-page">
+    <div class="auth-box">
+      <div class="auth-title">Login</div>
+      <div class="auth-subtitle">Welcome back to BittyBites</div>
+
+      <form class="auth-form" id="login-form" action="">
+        <div class="auth-field">
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" placeholder="enter your email" required />
+        </div>
+
+        <div class="auth-field">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="enter your password" required />
+        </div>
+
+        <div class="auth-actions">
+          <a class="auth-link" href="#">Forgot password?</a>
+        </div>
+
+        <button class="auth-btn" type="submit">Login</button>
+      </form>
+
+      <div class="auth-footer">
+        Don’t have an account? <a href="signup.html">Sign up</a>
+      </div>
+    </div>
+  </section>
+
+ <script type="module" src="js/login.js"></script>
+</body>
+</html>
+
