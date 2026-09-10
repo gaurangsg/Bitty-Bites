@@ -91,6 +91,7 @@ window.onload = fadeOut;
 async function addCartItem(name, price) {
   const response = await fetch('/api/cart', {
     method: 'POST',
+    credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, price })
   });
@@ -129,7 +130,7 @@ document.querySelectorAll('.home .slide .btn').forEach(button => {
 
     try {
       await addCartItem(name, 250);
-      const response = await fetch('/api/cart');
+      const response = await fetch('/api/cart', { credentials: 'same-origin' });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
       showCartPopup(result.items);
@@ -141,7 +142,7 @@ document.querySelectorAll('.home .slide .btn').forEach(button => {
 
 document.querySelector('.fa-shopping-cart').addEventListener('click', async event => {
   event.preventDefault();
-  const response = await fetch('/api/cart');
+  const response = await fetch('/api/cart', { credentials: 'same-origin' });
   const result = await response.json();
   if (!response.ok) return alert(result.error);
   showCartPopup(result.items);
@@ -217,6 +218,7 @@ function showCartPopup(items) {
     const quantity = button.dataset.cartAction === 'increase' ? currentQuantity + 1 : currentQuantity - 1;
     const response = await fetch('/api/cart', {
       method: 'PATCH',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: row.dataset.itemName, quantity })
     });
@@ -229,13 +231,14 @@ function showCartPopup(items) {
 
 document.querySelector('.order form').addEventListener('submit', async event => {
   event.preventDefault();
-  const cartResponse = await fetch('/api/cart');
+  const cartResponse = await fetch('/api/cart', { credentials: 'same-origin' });
   const cart = await cartResponse.json();
   const orderName = document.querySelector('#order-name').value.trim();
   const orderQuantity = Number(document.querySelector('#order-quantity').value) || 1;
   const items = cart.items.length ? cart.items : [{ name: orderName, quantity: orderQuantity, price: 0 }];
   const response = await fetch('/api/orders', {
     method: 'POST',
+    credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       customerName: document.querySelector('.order form input[placeholder="enter your name"]').value.trim(),

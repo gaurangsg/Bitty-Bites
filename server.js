@@ -69,7 +69,10 @@ app.post('/api/auth/signup', async (req, res) => {
             [name.trim(), email.trim().toLowerCase(), passwordHash]
         );
         req.session.user = { id: result.insertId, name: name.trim(), email: email.trim().toLowerCase() };
-        res.status(201).json({ user: req.session.user });
+        req.session.save(error => {
+            if (error) return res.status(500).json({ error: 'Unable to create account' });
+            res.status(201).json({ user: req.session.user });
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Unable to create account' });
@@ -86,7 +89,10 @@ app.post('/api/auth/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
         req.session.user = { id: user.id, name: user.name, email: user.email };
-        res.json({ user: req.session.user });
+        req.session.save(error => {
+            if (error) return res.status(500).json({ error: 'Unable to log in' });
+            res.json({ user: req.session.user });
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Unable to log in' });

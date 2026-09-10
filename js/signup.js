@@ -23,6 +23,7 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
     try{
         const response = await fetch("/api/auth/signup", {
             method: "POST",
+            credentials: "same-origin",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
         });
