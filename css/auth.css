@@ -1,5 +1,6 @@
 
     /* Login/Signup page uses the same color grading tokens as the main site */
+    // Login Page
     :root{
       --green:#27ae60;
       --black:#192a56;
