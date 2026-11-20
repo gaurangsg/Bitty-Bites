@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>BittyBites - Login</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-  <link rel="stylesheet" href="css/style.css" />
-
-  <style>
     /* Login/Signup page uses the same color grading tokens as the main site */
     :root{
       --green:#27ae60;
@@ -158,44 +146,4 @@
       .auth-box{ padding: 2rem 1.4rem; }
       .auth-page{ padding-top: 8.5rem; }
     }
-  </style>
-</head>
-<body>
-  <!-- loader -->
-  <div class="loader-container">
-    <img src="images/loader.gif" alt="" />
-  </div>
-
-  <section class="auth-page">
-    <div class="auth-box">
-      <div class="auth-title">Login</div>
-      <div class="auth-subtitle">Welcome back to BittyBites</div>
-
-      <form class="auth-form" id="login-form" action="">
-        <div class="auth-field">
-          <label for="login-email">Email</label>
-          <input id="login-email" type="email" placeholder="enter your email" required />
-        </div>
-
-        <div class="auth-field">
-          <label for="login-password">Password</label>
-          <input id="login-password" type="password" placeholder="enter your password" required />
-        </div>
-
-        <div class="auth-actions">
-          <a class="auth-link" href="#">Forgot password?</a>
-        </div>
-
-        <button class="auth-btn" type="submit">Login</button>
-      </form>
-
-      <div class="auth-footer">
-        Don’t have an account? <a href="signup.html">Sign up</a>
-      </div>
-    </div>
-  </section>
-
- <script type="module" src="js/login.js"></script>
-</body>
-</html>
-
+  

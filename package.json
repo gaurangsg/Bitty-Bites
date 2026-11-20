@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "server": "node server.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -13,6 +16,12 @@
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.2",
     "mysql2": "^3.14.3",
-    "serverless-http": "^4.0.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "serverless-http": "^4.0.0",
+    "swiper": "^14.4.0"
+  },
+  "devDependencies": {
+    "vite": "^6.4.1"
   }
 }

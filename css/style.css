@@ -219,12 +219,12 @@ header .icons #menu-bars{
 
 .dishes .box-container{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap:1.5rem;
 }
 
 .dishes .box-container .box{
-    padding:2.5rem;
+    padding:2.5rem 1.5rem;
     background:#fff;
     border-radius: .5rem;
     border:.1rem solid rgba(0,0,0,.2);
@@ -271,6 +271,8 @@ header .icons #menu-bars{
 
 .dishes .box-container .box img{
     height:17rem;
+    max-width:100%;
+    object-fit:contain;
     margin:1rem 0;
 }
 
@@ -291,8 +293,30 @@ header .icons #menu-bars{
 .dishes .box-container .box span{
     color:var(--green);
     font-weight: bolder;
-    margin-right: 1rem;
     font-size: 2.5rem;
+}
+
+.dishes .box-container .box .dish-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    width:100%;
+    margin-top:1rem;
+    white-space:nowrap;
+}
+
+.dishes .box-container .box .dish-actions > span{
+    order:0;
+    flex-shrink:0;
+}
+
+.dishes .box-container .box .dish-actions .btn{
+    order:1;
+    flex:0 0 auto;
+    margin-top:0;
+    padding:.8rem clamp(1rem, 2vw, 3rem);
+    white-space:nowrap;
 }
 
 .about .row{
@@ -536,7 +560,7 @@ header .icons #menu-bars{
 
 .footer .box-container{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap:1.5rem;
 }
 
@@ -736,6 +760,32 @@ header .icons #menu-bars{
         padding:2rem;
     }
 
+    .dishes .box-container,
+    .footer .box-container{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+
+}
+
+@media (min-width:992px) and (max-width:1199px){
+
+    .dishes .box-container .box{
+        padding:2.5rem 1rem;
+    }
+
+    .dishes .box-container .box .dish-actions{
+        gap:.6rem;
+    }
+
+    .dishes .box-container .box .dish-actions span{
+        font-size:1.8rem;
+    }
+
+    .dishes .box-container .box .dish-actions .btn{
+        font-size:1.3rem;
+        padding:.8rem .8rem;
+    }
 
 }
 
@@ -791,6 +841,10 @@ header .icons #menu-bars{
 
     .order form .inputBox .input{
         width:100%;
+    }
+
+    .footer .box-container{
+        grid-template-columns: 1fr;
     }
 
 }

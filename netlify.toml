@@ -1,8 +1,10 @@
 [build]
+  command = "npm run build"
+  publish = "dist"
   functions = "netlify/functions"
 
 [functions]
-  included_files = ["*.html", "css/**", "js/**", "images/**"]
+  included_files = ["dist/**", "*.sql", "*.js"]
 
 [[redirects]]
   from = "/api/*"
