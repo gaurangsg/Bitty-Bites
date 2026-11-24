@@ -1,6 +1,15 @@
 import React from 'react';
+import ProductCard from './components/ProductCard.jsx';
+import { featuredDishes, menuDishes, popularDishes } from './data/catalog.js';
 
-export default function SiteSections() { return (<>
+const featuredCopy = [
+  'Slow-tossed noodles, bold seasoning, and a little heat in every bite.',
+  'Golden, crisp on the outside, and tender all the way through.',
+  'Hot from the oven with a generous layer of irresistible toppings.',
+  'A fresh-from-the-kitchen favorite, made for sharing and savoring.'
+];
+
+export default function SiteSections({ favorites = [], onToggleFavorite, onAddToCart }) { return (<>
 
     
 
@@ -13,60 +22,41 @@ export default function SiteSections() { return (<>
 
 <section className="home" id="home">
 
+    <div className="home-ambient home-ambient-one" aria-hidden="true"></div>
+    <div className="home-ambient home-ambient-two" aria-hidden="true"></div>
+
     <div className="swiper-container home-slider">
 
         <div className="swiper-wrapper wrapper">
-
-            <div className="swiper-slide slide">
+            {featuredDishes.map((item, index) => <div className="swiper-slide slide" key={`${item.name}-${item.image}`}>
                 <div className="content">
-                    <span>our special dish</span>
-                    <h3>spicy noodles</h3>
-                    <p>noodles which are more tasty and more delicious</p>
-                    <a href="#" className="btn">order now</a>
+                    <span className="home-kicker"><i className="fas fa-star"></i> made fresh, served happy</span>
+                    <p className="home-eyebrow">today's kitchen favorite</p>
+                    <h1>{item.name}</h1>
+                    <p className="home-description">{featuredCopy[index] || 'A much-loved BittyBites favorite, made fresh for your table.'}</p>
+                    <div className="home-rating"><span aria-label="Rated 4.8 out of 5">★★★★★</span><small>Guest favorite <b>·</b> freshly prepared</small></div>
+                    <div className="home-hero-actions">
+                        <a href="/cart" className="btn home-order-button" onClick={event => { event.preventDefault(); onAddToCart(item.name, item.price, true, item.image); }}>Order this special <i className="fas fa-arrow-right"></i></a>
+                        <a href="#menu" className="home-explore-link"><span><i className="fas fa-play"></i></span> Explore the menu</a>
+                    </div>
                 </div>
-                <div className="image">
-                    <img src="images/home-img-1.png" alt="" />
+                <div className="image home-hero-image">
+                    <div className="home-image-orbit home-image-orbit-one"></div><div className="home-image-orbit home-image-orbit-two"></div>
+                    <div className="home-image-stage"><img src={item.image} alt={item.name} /></div>
+                    <div className="home-image-stamp"><i className="fas fa-leaf"></i><span>freshly<br />made</span></div>
+                    <div className="home-price-chip"><span>today's special</span><strong>₹{Number(item.price).toFixed(0)}</strong></div>
                 </div>
-            </div>
-
-            <div className="swiper-slide slide">
-                <div className="content">
-                    <span>our special dish</span>
-                    <h3>fried chicken</h3>
-                    <p>the best ever fried chicken of the city </p>
-                    <a href="#" className="btn">order now</a>
-                </div>
-                <div className="image">
-                    <img src="images/home-img-2.png" alt="" />
-                </div>
-            </div>
-
-            <div className="swiper-slide slide">
-                <div className="content">
-                    <span>our special dish</span>
-                    <h3>hot pizza</h3>
-                    <p>the best ever pizza whose test is the best of the city </p>
-                    <a href="#" className="btn">order now</a>
-                </div>
-                <div className="image">
-                    <img src="images/home-img-3.png" alt="" />
-                </div>
-            </div>
-            <div className="swiper-slide slide">
-                <div className="content">
-                    <span>our special dish</span>
-                    <h3>fried chicken</h3>
-                    <p>the best ever fried chicken of the city </p>
-                    <a href="#" className="btn">order now</a>
-                </div>
-                <div className="image">
-                    <img src="images/home-img-4.png" alt="" />
-                </div>
-            </div>
+            </div>)}
         </div>
 
         <div className="swiper-pagination"></div>
 
+    </div>
+
+    <div className="home-discovery" aria-label="Explore BittyBites">
+        <a href="#dishes"><span className="home-discovery-icon"><i className="fas fa-fire-alt"></i></span><span><strong>Fan favorites</strong><small>The dishes people come back for</small></span><i className="fas fa-arrow-up"></i></a>
+        <a href="#menu"><span className="home-discovery-icon"><i className="fas fa-utensils"></i></span><span><strong>Today's menu</strong><small>Find your next delicious bite</small></span><i className="fas fa-arrow-up"></i></a>
+        <a href="#review"><span className="home-discovery-icon"><i className="fas fa-heart"></i></span><span><strong>Made with care</strong><small>See what our guests are saying</small></span><i className="fas fa-arrow-up"></i></a>
     </div>
 
 </section>
@@ -74,155 +64,11 @@ export default function SiteSections() { return (<>
 
 
 <section className="dishes" id="dishes">
-
     <h3 className="sub-heading"> our dishes </h3>
     <h1 className="heading"> popular dishes </h1>
-
     <div className="box-container">
-
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-1.png" alt="" />
-            <h3>Burger</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>99/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-2.png" alt="" />
-            <h3>Chicken Nuggets</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>99/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-3.png" alt="" />
-            <h3>Roasted Chicken</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>299/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-4.png" alt="" />
-            <h3>Italino Pizza</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>130/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-5.png" alt="" />
-            <h3>Stuffed Cookie</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>99/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-6.png" alt="" />
-            <h3>Fried Chicken</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>179/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-7.png" alt="" />
-            <h3>BBQ Ribs</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>199/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-        <div className="box">
-            <a href="#" className="fas fa-heart"></a>
-            <a href="#" className="fas fa-eye"></a>
-            <img src="images/dish-8.png" alt="" />
-            <h3>Garlic Breadsticks</h3>
-            <div className="stars">
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star"></i>
-                <i className="fas fa-star-half-alt"></i>
-            </div>
-            <div className="dish-actions">
-                <span>179/-</span>
-                <a href="#" className="btn">add to cart</a>
-            </div>
-        </div>
-       
+      {popularDishes.map(item => <ProductCard key={item.name} item={item} variant="popular" favorites={favorites} onToggleFavorite={onToggleFavorite} onAddToCart={onAddToCart} />)}
     </div>
-
 </section>
 
 
@@ -266,255 +112,11 @@ export default function SiteSections() { return (<>
 
 
 <section className="menu" id="menu">
-
     <h3 className="sub-heading"> our menu </h3>
     <h1 className="heading"> today's speciality </h1>
-
     <div className="box-container">
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-1.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Pepperoni Pizza</h3>
-                <p>Indulge in the ultimate cheesy delight of pepperoni pizza.</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">99/- </span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-2.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Hamburger</h3>
-                <p>Experience the finest hamburgers in the city, crafted with unbeatable quality and flavor.</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">119/-</span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-3.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Pancake</h3>
-                <p>A delicious treat with an irresistible taste that will leave you craving more.</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">199/-</span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-4.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Belgiun Waffle</h3>
-                <p>The perfect blend of homely goodness and delightful flavors in every bite.</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">99/-</span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-5.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Berry Cake</h3>
-                <p>A delightful burst of flavors that feels like home, crafted with love by our restaurant.</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">99/-</span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-6.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Blue Gray Cupcakes</h3>
-                <p>Sweet, tasty, and irresistibly yummy treats for every occasion. </p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">299/-</span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-7.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Mixed Fruit Juice</h3>
-                <p>Refreshing and flavorful, with a delightful variety for everyone to enjoy!</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">149/- </span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-8.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Acai Bowl</h3>
-                <p>ake your time to savor the goodness and experience our exceptional service.</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">169/- </span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-9.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>American Hot Dogs</h3>
-                <p>We proudly serve the best, refreshing, and zesty Hot Dogs  you'll ever taste! </p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">299/- </span>
-                
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-10.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Turkey Roast</h3>
-                <p>Best Roasted turkey chicken you will ever have</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">169/- </span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-11.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>chicken chettinad</h3>
-                <p>India's best chettinad chicken in state</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">169/- </span>
-            </div>
-        </div>
-
-        <div className="box">
-            <div className="image">
-                <img src="images/menu-12.jpg" alt="" />
-                <a href="#" className="fas fa-heart"></a>
-            </div>
-            <div className="content">
-                <div className="stars">
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star"></i>
-                    <i className="fas fa-star-half-alt"></i>
-                </div>
-                <h3>Air Fried chicken wings</h3>
-                <p>The wings you would eat a lot</p>
-                <a href="#" className="btn">add to cart</a>
-                <span className="price">169/- </span>
-            </div>
-        </div>
-
+      {menuDishes.map(item => <ProductCard key={item.name} item={item} variant="menu" favorites={favorites} onToggleFavorite={onToggleFavorite} onAddToCart={onAddToCart} />)}
     </div>
-
 </section>
 
 
@@ -611,54 +213,23 @@ export default function SiteSections() { return (<>
 <section className="order" id="order">
 
     <h3 className="sub-heading"> order now </h3>
-    <h1 className="heading"> free and fast </h1>
-
-    <form action="">
-
-        <div className="inputBox">
-            <div className="input">
-                <span>your name</span>
-                <input type="text" placeholder="enter your name" />
-            </div>
-            <div className="input">
-                <span>your number</span>
-                <input type="number" placeholder="enter your number" />
+    <h1 className="heading"> fresh food, easy checkout </h1>
+    <div className="order-checkout-handoff">
+        <div className="order-checkout-copy">
+            <span className="order-checkout-kicker"><i className="fas fa-bag-shopping"></i> YOUR TABLE, YOUR CHOICE</span>
+            <h2>Build your order first</h2>
+            <p>Add dishes from our menu, then enter your delivery and contact details together in your cart checkout.</p>
+            <div className="order-checkout-actions">
+                <a href="/cart" className="btn">Go to cart <i className="fas fa-arrow-right"></i></a>
+                <a href="#menu" className="order-menu-link">Explore today’s menu</a>
             </div>
         </div>
-        <div className="inputBox">
-            <div className="input">
-                <span>your order</span>
-                <input id="order-name" type="text" placeholder="enter food name" />
-            </div>
-            <div className="input">
-                <span>additional food</span>
-                <input id="order-extra" type="text" placeholder="extra with food" />
-            </div>
+        <div className="order-checkout-steps" aria-label="How checkout works">
+            <div><span>01</span><i className="fas fa-utensils"></i><strong>Choose dishes</strong><small>Pick favorites from the menu</small></div>
+            <div><span>02</span><i className="fas fa-clipboard-list"></i><strong>Review your cart</strong><small>Adjust items and quantities</small></div>
+            <div><span>03</span><i className="fas fa-truck"></i><strong>Share delivery details</strong><small>One simple checkout form</small></div>
         </div>
-        <div className="inputBox">
-            <div className="input">
-                <span>how musch</span>
-                <input id="order-quantity" type="number" placeholder="how many orders" min="1" />
-            </div>
-            <div className="input">
-                <span>date and time</span>
-                <input id="order-date" type="datetime-local" />
-            </div>
-        </div>
-        <div className="inputBox">
-            <div className="input">
-                <span>your address</span>
-                        <textarea name="" placeholder="enter your address" id="order-address" cols="30" rows="10"></textarea>
-            </div>
-            <div className="input">
-                <span>your message</span>
-                        <textarea name="" placeholder="enter your message" id="order-message" cols="30" rows="10"></textarea>
-            </div>
-        </div>
-
-        <input type="submit" value="order now" className="btn" />
-
-    </form>
+    </div>
 
 </section>
 
@@ -667,40 +238,30 @@ export default function SiteSections() { return (<>
 <section className="footer">
 
     <div className="box-container">
-
-        <div className="box">
-            <h3>locations</h3>
-            <a href="#">india</a>
-            <a href="#">japan</a>
-            <a href="#">russia</a>
-            <a href="#">USA</a>
-            <a href="#">france</a>
-        </div>
-
         <div className="box">
             <h3>quick links</h3>
-            <a href="#">home</a>
-            <a href="#">dishes</a>
-            <a href="#">about</a>
-            <a href="#">menu</a>
-            <a href="#">review</a>
-            <a href="#">order</a>
+            <div className="footer-quick-links">
+                <a href="#home">home</a>
+                <a href="#dishes">dishes</a>
+                <a href="#about">about</a>
+                <a href="#menu">menu</a>
+                <a href="#review">reviews</a>
+                <a href="#order">order</a>
+            </div>
         </div>
 
         <div className="box">
-            <h3>contact info</h3>
-            <a href="#">+91-9096001994</a>
-            <a href="#">BittyBites.restaurant@gmail.com</a>
-            <a href="#">gaurangsangle2223@gmail.com</a>
-            <a href="#">Dhule, MH, india - 425401</a>
+            <h3>restaurant contact</h3>
+            <a href="mailto:BittyBites.restaurant@gmail.com"><i className="fas fa-envelope"></i> BittyBites.restaurant@gmail.com</a>
+            <a href="https://maps.google.com/?q=Dhule%2C+Maharashtra+425401" target="_blank" rel="noreferrer"><i className="fas fa-map-marker-alt"></i> Dhule, Maharashtra - 425401</a>
         </div>
 
         <div className="box">
-            <h3>follow us</h3>
-            <a href="https://www.facebook.com/gaurang.sangle.1/">facebook</a>
-            <a href="https://www.instagram.com/sg.gourang/">instagram</a>
-            <a href="https://www.linkedin.com/in/gaurangsangle/">linkedin</a>
-            <a href="https://github.com/gaurangsg">GitHub</a>
+            <h3>website by</h3>
+            <p className="footer-builder-name">Gaurang Sangle</p>
+            <a href="tel:+919096001994"><i className="fas fa-phone"></i> +91-9096001994</a>
+            <a href="mailto:gaurangsangle2523@gmail.com"><i className="fas fa-envelope"></i> gaurangsangle2523@gmail.com</a>
+            <a href="https://www.instagram.com/sg.gourang/" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i> Instagram</a>
         </div>
 
     </div>

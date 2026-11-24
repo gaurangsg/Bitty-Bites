@@ -1,0 +1,32 @@
+{
+  "featuredDishes": [
+    { "name": "Spicy Noodles", "price": 250, "image": "images/home-img-1.png" },
+    { "name": "Fried Chicken", "price": 250, "image": "images/home-img-2.png" },
+    { "name": "Hot Pizza", "price": 250, "image": "images/home-img-3.png" },
+    { "name": "Fried Chicken", "price": 250, "image": "images/home-img-4.png" }
+  ],
+  "popularDishes": [
+    { "name": "Burger", "price": 99, "image": "images/dish-1.png" },
+    { "name": "Chicken Nuggets", "price": 99, "image": "images/dish-2.png" },
+    { "name": "Roasted Chicken", "price": 299, "image": "images/dish-3.png" },
+    { "name": "Italino Pizza", "price": 130, "image": "images/dish-4.png" },
+    { "name": "Stuffed Cookie", "price": 99, "image": "images/dish-5.png" },
+    { "name": "Fried Chicken", "price": 179, "image": "images/dish-6.png" },
+    { "name": "BBQ Ribs", "price": 199, "image": "images/dish-7.png" },
+    { "name": "Garlic Breadsticks", "price": 179, "image": "images/dish-8.png" }
+  ],
+  "menuDishes": [
+    { "name": "Pepperoni Pizza", "price": 99, "image": "images/menu-1.jpg", "description": "Indulge in the ultimate cheesy delight of pepperoni pizza." },
+    { "name": "Hamburger", "price": 119, "image": "images/menu-2.jpg", "description": "Experience the finest hamburgers in the city, crafted with unbeatable quality and flavor." },
+    { "name": "Pancake", "price": 199, "image": "images/menu-3.jpg", "description": "A delicious treat with an irresistible taste that will leave you craving more." },
+    { "name": "Belgiun Waffle", "price": 99, "image": "images/menu-4.jpg", "description": "The perfect blend of homely goodness and delightful flavors in every bite." },
+    { "name": "Berry Cake", "price": 99, "image": "images/menu-5.jpg", "description": "A delightful burst of flavors that feels like home, crafted with love by our restaurant." },
+    { "name": "Blue Gray Cupcakes", "price": 299, "image": "images/menu-6.jpg", "description": "Sweet, tasty, and irresistibly yummy treats for every occasion." },
+    { "name": "Mixed Fruit Juice", "price": 149, "image": "images/menu-7.jpg", "description": "Refreshing and flavorful, with a delightful variety for everyone to enjoy!" },
+    { "name": "Acai Bowl", "price": 169, "image": "images/menu-8.jpg", "description": "Take your time to savor the goodness and experience our exceptional service." },
+    { "name": "American Hot Dogs", "price": 299, "image": "images/menu-9.jpg", "description": "We proudly serve the best, refreshing, and zesty hot dogs you’ll ever taste!" },
+    { "name": "Turkey Roast", "price": 169, "image": "images/menu-10.jpg", "description": "Best roasted turkey chicken you will ever have." },
+    { "name": "Chicken Chettinad", "price": 169, "image": "images/menu-11.jpg", "description": "India’s best Chettinad chicken in the state." },
+    { "name": "Air Fried Chicken Wings", "price": 169, "image": "images/menu-12.jpg", "description": "The wings you would eat a lot." }
+  ]
+}
