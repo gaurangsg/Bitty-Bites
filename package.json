@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "server": "node server.js",
-    "dev": "vite",
+    "dev": "concurrently -k -n API,VITE \"node server.js\" \"vite\"",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -15,13 +15,18 @@
     "express": "^5.1.0",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.2",
+    "leaflet": "^1.9.4",
     "mysql2": "^3.14.3",
+    "nodemailer": "^10.6.1",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-leaflet": "^5.0.0",
     "serverless-http": "^4.0.0",
     "swiper": "^14.4.0"
   },
   "devDependencies": {
+    "concurrently": "^9.2.5",
     "vite": "^6.4.1"
   }
 }

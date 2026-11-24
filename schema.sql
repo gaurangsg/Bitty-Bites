@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    google_sub VARCHAR(255) NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -28,5 +29,27 @@ CREATE TABLE IF NOT EXISTS order_items (
     item_name VARCHAR(150) NOT NULL,
     quantity INT UNSIGNED NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS customer_profiles (
+    user_id INT UNSIGNED PRIMARY KEY,
+    phone VARCHAR(30) NOT NULL DEFAULT '',
+    default_address TEXT,
+    latitude DECIMAL(10, 7) NULL,
+    longitude DECIMAL(10, 7) NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS order_fulfillment (
+    order_id INT UNSIGNED PRIMARY KEY,
+    fulfillment_status VARCHAR(32) NOT NULL DEFAULT 'new',
+    payment_status VARCHAR(32) NOT NULL DEFAULT 'awaiting_payment',
+    payment_method VARCHAR(16) NOT NULL DEFAULT 'upi',
+    payment_reference VARCHAR(100) NULL,
+    latitude DECIMAL(10, 7) NULL,
+    longitude DECIMAL(10, 7) NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
