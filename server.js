@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'bitty_bites',
-        ssl: process.env.DB_SSL === 'true' ? {} : undefined
+        ssl: {},
     });
 }
 

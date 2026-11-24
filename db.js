@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'bitty_bites',
-    ssl: process.env.DB_SSL === 'true' ? {} : undefined,
+    ssl: {},
     waitForConnections: true,
     connectionLimit: 10
 });
