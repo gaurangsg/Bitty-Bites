@@ -162,13 +162,23 @@ function requireOwnerPage(req, res, next) {
     next();
 }
 
-app.get('/', requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
-app.get('/index.html', requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
-app.get(['/login', '/signup'], (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
-app.get(['/cart', '/favorites', '/payment', '/account'], requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+function sendAppPage(_req, res) {
+    res.set({
+        'Cache-Control': 'private, no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        Pragma: 'no-cache',
+        Expires: '0'
+    });
+    res.vary('Cookie');
+    res.sendFile(path.join(publicDir, 'index.html'));
+}
+
+app.get('/', requirePageAuth, sendAppPage);
+app.get('/index.html', requirePageAuth, sendAppPage);
+app.get(['/login', '/signup'], sendAppPage);
+app.get(['/cart', '/favorites', '/payment', '/account'], requirePageAuth, sendAppPage);
 app.get('/admin', (_req, res) => res.redirect('/admin/login'));
-app.get('/admin/login', (_req, res) => res.sendFile(path.join(publicDir, 'index.html')));
-app.get('/admin/orders', requireOwnerPage, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/admin/login', sendAppPage);
+app.get('/admin/orders', requireOwnerPage, sendAppPage);
 app.get('/owner/orders', (_req, res) => res.redirect('/admin/orders'));
 app.get('/login.html', (req, res) => res.redirect('/login'));
 app.get('/signup.html', (req, res) => res.redirect('/signup'));
