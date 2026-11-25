@@ -24,7 +24,11 @@ const apiRequest = async (url, options = {}) => {
     });
   }
 
-  if (response.status === 401) { window.location.replace('/login'); return null; }
+  if (response.status === 401) {
+    const adminRequest = url.startsWith('/api/owner/') || window.location.pathname.startsWith('/admin/');
+    window.location.replace(adminRequest ? '/admin/login' : '/login');
+    return null;
+  }
 
   return response;
 
@@ -330,11 +334,12 @@ function FavoritesPage({ items, onToggleFavorite, onAddToCart }) {
   </main>;
 }
 
-function AccountPage({ profile, onSave }) {
+function AccountPage({ profile, onSave, onLogout }) {
   const [form, setForm] = useState({ name: '', phone: '', address: '' });
   const [pin, setPin] = useState(null);
   const [mapOpen, setMapOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -351,6 +356,12 @@ function AccountPage({ profile, onSave }) {
     try { await onSave({ ...form, latitude: pin?.[0] ?? null, longitude: pin?.[1] ?? null }); }
     catch (saveError) { setError(saveError.message || 'Unable to save your profile'); }
     finally { setSaving(false); }
+  };
+  const logout = async () => {
+    setLoggingOut(true);
+    setError('');
+    try { await onLogout('/login'); }
+    catch (logoutError) { setError(logoutError.message || 'Unable to sign out right now'); setLoggingOut(false); }
   };
 
   return <main className="commerce-page account-page">
@@ -369,17 +380,18 @@ function AccountPage({ profile, onSave }) {
         {error && <p className="checkout-error" role="alert">{error}</p>}
         <button className="btn account-save-button" type="submit" disabled={saving}>{saving ? <><span className="button-spinner"></span> Saving your details…</> : <>Save my details <i className="fas fa-check"></i></>}</button>
       </form>
-      <aside className="commerce-card account-benefits-card"><span className="account-benefit-icon"><i className="fas fa-bolt"></i></span><h2>Checkout, without the repeat typing</h2><p>Your name, phone number and default address are filled in for your next order. You can still change delivery details any time.</p><a href="/owner/orders" className="account-owner-link">Restaurant owner? Open orders dashboard <i className="fas fa-arrow-right"></i></a></aside>
+      <aside className="commerce-card account-benefits-card"><span className="account-benefit-icon"><i className="fas fa-bolt"></i></span><h2>Checkout, without the repeat typing</h2><p>Your name, phone number and default address are filled in for your next order. You can still change delivery details any time.</p><button className="account-logout-button" type="button" onClick={logout} disabled={loggingOut}>{loggingOut ? <><span className="button-spinner"></span> Signing out...</> : <><i className="fas fa-sign-out-alt"></i> Sign out of your account</>}</button></aside>
     </div>
     <AddressMapPicker open={mapOpen} onClose={() => setMapOpen(false)} initialPosition={pin} onConfirm={setPin} />
   </main>;
 }
 
-function OwnerOrdersPage({ showToast }) {
+function OwnerOrdersPage({ showToast, onLogout }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const latestOrderId = useRef(null);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const loadOrders = useCallback(async (silent = false) => {
     try {
@@ -413,10 +425,17 @@ function OwnerOrdersPage({ showToast }) {
     } catch (updateError) { showToast(updateError.message || 'Unable to update order', 'error'); }
   };
 
+  const logout = async () => {
+    setLoggingOut(true);
+    try { await onLogout('/admin/login'); }
+    catch (logoutError) { showToast(logoutError.message || 'Unable to sign out right now', 'error'); setLoggingOut(false); }
+  };
+
   return <main className="commerce-page owner-orders-page">
-    <div className="owner-dashboard-topline"><a href="/account" className="continue-shopping"><i className="fas fa-user-circle"></i> Account</a><span className="owner-live-indicator"><i></i> Auto-refreshing every 8 seconds</span></div>
+    <div className="admin-portal-bar"><a className="admin-portal-brand" href="/admin/orders"><i className="fas fa-utensils"></i><span>BittyBites <small>RESTAURANT ADMIN</small></span></a><div className="admin-portal-actions"><a href="/" target="_blank" rel="noreferrer"><i className="fas fa-external-link-alt"></i> View storefront</a><button type="button" onClick={logout} disabled={loggingOut}>{loggingOut ? <><span className="button-spinner"></span> Signing out...</> : <><i className="fas fa-sign-out-alt"></i> Sign out</>}</button></div></div>
+    <div className="owner-dashboard-topline"><span className="owner-live-indicator"><i></i> Auto-refreshing every 8 seconds</span></div>
     <div className="commerce-heading owner-dashboard-heading"><span className="commerce-eyebrow">RESTAURANT OPERATIONS</span><h1>Orders Dashboard</h1><p>New customer orders appear here as soon as checkout is submitted.</p></div>
-    {error && <div className="commerce-card owner-dashboard-error"><i className="fas fa-lock"></i><div><strong>Owner dashboard unavailable</strong><p>{error} Sign in using the account configured by OWNER_EMAIL.</p></div></div>}
+    {error && <div className="commerce-card owner-dashboard-error"><i className="fas fa-lock"></i><div><strong>Owner dashboard unavailable</strong><p>{error} Sign in with the restaurant admin account configured by OWNER_EMAIL.</p><a href="/admin/login">Admin sign-in</a></div></div>}
     <div className="owner-orders-toolbar"><span><strong>{orders.length}</strong> recent orders</span><button type="button" className="text-action" onClick={() => loadOrders()}><i className="fas fa-sync-alt"></i> Refresh now</button></div>
     {loading ? <div className="commerce-card owner-orders-loading"><span className="payment-spinner"></span> Loading your orders…</div> : orders.length ? <div className="owner-orders-list">{orders.map(order => <article className="commerce-card owner-order-card" key={order.id}>
       <div className="owner-order-header"><div><span className="commerce-eyebrow">ORDER #{order.id}</span><h2>{order.customerName}</h2><small>{new Date(order.createdAt).toLocaleString()}</small></div><strong className="owner-order-total">₹{Number(order.total).toFixed(2)}</strong></div>
@@ -430,6 +449,57 @@ function OwnerOrdersPage({ showToast }) {
         <label><span>Payment</span><select value={order.paymentStatus || 'awaiting_payment'} onChange={event => updateOrder(order, order.fulfillmentStatus || 'new', event.target.value)}><option value="awaiting_payment">Awaiting payment</option><option value="verification_requested">Verify UPI reference</option><option value="cod_due">Cash due on delivery</option><option value="received">Received</option></select></label></div>
     </article>)}</div> : <div className="commerce-card commerce-empty-state owner-empty-state"><div className="empty-state-icon"><i className="fas fa-receipt"></i></div><h2>No orders yet</h2><p>New orders will show up here immediately after a customer submits checkout.</p></div>}
   </main>;
+}
+
+function AdminLoginPage() {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async event => {
+    event.preventDefault();
+    if (pending) return;
+    const data = new FormData(event.currentTarget);
+    setPending(true);
+    setError('');
+    try {
+      const response = await fetch('/api/owner/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.get('email'), password: data.get('password') })
+      });
+      const result = await responseJson(response);
+      if (!response.ok) throw new Error(result.error || 'Unable to sign in');
+      window.location.assign('/admin/orders');
+    } catch (loginError) {
+      setError(loginError.message || 'Unable to sign in to restaurant administration');
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return <section className="auth-page admin-auth-page">
+    <div className="auth-shell">
+      <aside className="auth-visual">
+        <a href="/" className="auth-brand"><i className="fas fa-utensils"></i><span>BittyBites<span>.</span></span></a>
+        <div className="auth-visual-glow auth-visual-glow-one"></div><div className="auth-visual-glow auth-visual-glow-two"></div>
+        <div className="auth-food-orbit"><div className="auth-food-orbit-inner"><img src="images/home-img-2.png" alt="Fresh BittyBites kitchen special" /></div><span className="auth-food-spark auth-food-spark-one">✦</span><span className="auth-food-spark auth-food-spark-two">✧</span></div>
+        <div className="auth-visual-copy"><span className="auth-visual-kicker"><i className="fas fa-chart-line"></i> RESTAURANT OPERATIONS</span><h2>Every order,<br />right on <em>time.</em></h2><p>A dedicated place to follow new orders and keep service moving.</p><div className="auth-rating"><span>●</span><b>BittyBites admin portal</b></div></div>
+        <span className="auth-visual-footnote">RESTAURANT ADMINISTRATION</span>
+      </aside>
+      <div className="auth-box admin-auth-box">
+        <a href="/" className="auth-mobile-brand"><i className="fas fa-utensils"></i> BittyBites<span>.</span></a>
+        <div className="auth-card-heading"><span className="auth-eyebrow">PRIVATE ADMIN PORTAL</span><div className="auth-title">Restaurant sign in</div><div className="auth-subtitle">Sign in with the owner account to manage incoming orders.</div></div>
+        {error && <div className="auth-inline-error" role="alert"><i className="fas fa-exclamation-circle"></i><span>{error}</span></div>}
+        <form className="auth-form" onSubmit={submit}>
+          <div className="auth-field"><label htmlFor="admin-email">Owner email</label><input id="admin-email" name="email" type="email" autoComplete="username" placeholder="Enter the configured owner email" required /></div>
+          <div className="auth-field"><label htmlFor="admin-password">Password</label><input id="admin-password" name="password" type="password" autoComplete="current-password" placeholder="Enter your password" required /></div>
+          <button className="auth-btn" type="submit" disabled={pending}>{pending && <span className="auth-button-spinner" aria-hidden="true" />}{pending ? 'Signing in...' : <>Open orders dashboard <i className="fas fa-arrow-right"></i></>}</button>
+        </form>
+        <div className="auth-footer"><a href="/">← Back to the customer storefront</a></div>
+      </div>
+    </div>
+  </section>;
 }
 
 function PaymentPage({ showToast }) {
@@ -721,12 +791,15 @@ export default function App() {
   const pathname = window.location.pathname;
   const isLogin = pathname === '/login' || pathname === '/login.html';
   const isSignup = pathname === '/signup' || pathname === '/signup.html';
+  const isAdminLogin = pathname === '/admin' || pathname === '/admin/login';
+  const isAdminOrders = pathname === '/admin/orders' || pathname === '/owner/orders';
+  const isAdminArea = isAdminLogin || isAdminOrders;
   const isCartPage = pathname === '/cart';
   const isFavoritesPage = pathname === '/favorites';
   const isPaymentPage = pathname === '/payment';
   const isAccountPage = pathname === '/account';
   const isOwnerOrdersPage = pathname === '/owner/orders';
-  const isHome = !isLogin && !isSignup && !isCartPage && !isFavoritesPage && !isPaymentPage && !isAccountPage && !isOwnerOrdersPage;
+  const isHome = !isLogin && !isSignup && !isAdminArea && !isCartPage && !isFavoritesPage && !isPaymentPage && !isAccountPage && !isOwnerOrdersPage;
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -745,6 +818,13 @@ export default function App() {
   }, []);
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
+  const logout = useCallback(async destination => {
+    const response = await apiRequest('/api/auth/logout', { method: 'POST' });
+    if (!response) return;
+    const result = await responseJson(response);
+    if (!response.ok) throw new Error(result.error || 'Unable to sign out');
+    window.location.assign(destination);
+  }, []);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -874,7 +954,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (isLogin || isSignup) return undefined;
+    if (isLogin || isSignup || isAdminArea) return undefined;
     let active = true;
     Promise.all([loadCart(), loadFavorites(), loadAccount()]).catch(error => {
       if (active) showToast(error.message || 'Unable to load your saved items', 'error');
@@ -922,6 +1002,7 @@ export default function App() {
     return () => window.removeEventListener('scroll', update);
   }, [isHome]);
 
+  if (isAdminLogin) return <AdminLoginPage />;
   if (isLogin || isSignup) return <AuthPage signup={isSignup} />;
 
   const totalCartCount = cartItems.reduce((sum, item) => sum + Number(item.quantity), 0);
@@ -932,7 +1013,7 @@ export default function App() {
       <span className="auth-success-copy"><strong>You’re right where you belong</strong><small>{authToast}</small></span>
       <button type="button" aria-label="Dismiss welcome message" onClick={() => setAuthToast('')}><i className="fas fa-times"></i></button>
     </div>}
-    <Header
+    {!isAdminOrders && <Header
       activeSection={activeSection}
       menuOpen={menuOpen}
       setMenuOpen={setMenuOpen}
@@ -940,12 +1021,12 @@ export default function App() {
       isHome={isHome}
       cartCount={totalCartCount}
       favoriteCount={favoriteItems.length}
-    />
-    <SearchOverlay open={searchOpen} onClose={closeSearch} />
+    />}
+    {!isAdminOrders && <SearchOverlay open={searchOpen} onClose={closeSearch} />}
     {isHome && <HomeScrollAid />}
     {isPaymentPage ? <PaymentPage showToast={showToast} /> : isCartPage ? <CartPage items={cartItems} account={accountProfile} onQuantity={changeQuantity} onClear={clearCart} orderPending={orderPending} checkoutError={checkoutError} /> :
-      isAccountPage ? <AccountPage profile={accountProfile} onSave={saveAccount} /> :
-        isOwnerOrdersPage ? <OwnerOrdersPage showToast={showToast} /> :
+      isAccountPage ? <AccountPage profile={accountProfile} onSave={saveAccount} onLogout={logout} /> :
+        isAdminOrders || isOwnerOrdersPage ? <OwnerOrdersPage showToast={showToast} onLogout={logout} /> :
       isFavoritesPage ? <FavoritesPage items={favoriteItems} onToggleFavorite={toggleFavorite} onAddToCart={addItem} /> :
         <SiteSections favorites={favoriteItems} onToggleFavorite={toggleFavorite} onAddToCart={addItem} />}
     <Loader />

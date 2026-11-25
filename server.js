@@ -154,10 +154,22 @@ function requirePageAuth(req, res, next) {
     next();
 }
 
+function requireOwnerPage(req, res, next) {
+    const ownerEmail = (process.env.OWNER_EMAIL || '').trim().toLowerCase();
+    if (!req.session.user || !ownerEmail || (req.session.user.email || '').toLowerCase() !== ownerEmail) {
+        return res.redirect('/admin/login');
+    }
+    next();
+}
+
 app.get('/', requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
 app.get('/index.html', requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
 app.get(['/login', '/signup'], (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
-app.get(['/cart', '/favorites', '/payment', '/account', '/owner/orders'], requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get(['/cart', '/favorites', '/payment', '/account'], requirePageAuth, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/admin', (_req, res) => res.redirect('/admin/login'));
+app.get('/admin/login', (_req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/admin/orders', requireOwnerPage, (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/owner/orders', (_req, res) => res.redirect('/admin/orders'));
 app.get('/login.html', (req, res) => res.redirect('/login'));
 app.get('/signup.html', (req, res) => res.redirect('/signup'));
 app.use(express.static(publicDir, { index: false }));
@@ -205,6 +217,34 @@ app.post('/api/auth/login', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Unable to log in' });
+    }
+});
+
+app.post('/api/owner/login', async (req, res) => {
+    const { email, password } = req.body;
+    const ownerEmail = (process.env.OWNER_EMAIL || '').trim().toLowerCase();
+    if (!ownerEmail) return res.status(503).json({ error: 'Restaurant admin sign-in is not configured yet. Set OWNER_EMAIL in the Vercel production environment.' });
+    if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
+    if (String(email).trim().toLowerCase() !== ownerEmail) return res.status(401).json({ error: 'Invalid admin email or password' });
+
+    try {
+        const [users] = await pool.query('SELECT id, name, email, password_hash FROM users WHERE email = ? LIMIT 1', [ownerEmail]);
+        const user = users[0];
+        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+            return res.status(401).json({ error: 'Invalid admin email or password' });
+        }
+
+        req.session.regenerate(error => {
+            if (error) return res.status(500).json({ error: 'Unable to start the admin session. Please try again.' });
+            req.session.user = { id: user.id, name: user.name, email: user.email };
+            req.session.save(saveError => {
+                if (saveError) return res.status(500).json({ error: 'Unable to save the admin session. Please try again.' });
+                res.json({ user: req.session.user });
+            });
+        });
+    } catch (error) {
+        console.error('Restaurant admin sign-in failed:', error.message);
+        res.status(500).json({ error: 'Unable to sign in to restaurant administration' });
     }
 });
 

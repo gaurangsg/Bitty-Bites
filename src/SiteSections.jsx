@@ -254,6 +254,7 @@ export default function SiteSections({ favorites = [], onToggleFavorite, onAddTo
             <h3>restaurant contact</h3>
             <a href="mailto:BittyBites.restaurant@gmail.com"><i className="fas fa-envelope"></i> BittyBites.restaurant@gmail.com</a>
             <a href="https://maps.google.com/?q=Dhule%2C+Maharashtra+425401" target="_blank" rel="noreferrer"><i className="fas fa-map-marker-alt"></i> Dhule, Maharashtra - 425401</a>
+            <a href="/admin/login"><i className="fas fa-lock"></i> Restaurant admin</a>
         </div>
 
         <div className="box">
