@@ -169,7 +169,7 @@ function sendAppPage(_req, res) {
         Expires: '0'
     });
     res.vary('Cookie');
-    res.sendFile(path.join(publicDir, 'index.html'));
+    res.sendFile(path.join(publicDir, 'index.html'), { cacheControl: false });
 }
 
 app.get('/', requirePageAuth, sendAppPage);
