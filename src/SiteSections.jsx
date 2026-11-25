@@ -262,7 +262,7 @@ export default function SiteSections({ favorites = [], onToggleFavorite, onAddTo
             <p className="footer-builder-name">Gaurang Sangle</p>
             <a href="tel:+919096001994"><i className="fas fa-phone"></i> +91-9096001994</a>
             <a href="mailto:gaurangsangle2523@gmail.com"><i className="fas fa-envelope"></i> gaurangsangle2523@gmail.com</a>
-            <a href="https://www.instagram.com/sg.gourang/" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.instagram.com/gaurxxn.code/" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i> Instagram</a>
         </div>
 
     </div>
