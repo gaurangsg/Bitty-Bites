@@ -483,7 +483,7 @@ function AdminLoginPage() {
       <aside className="auth-visual">
         <a href="/" className="auth-brand"><i className="fas fa-utensils"></i><span>BittyBites<span>.</span></span></a>
         <div className="auth-visual-glow auth-visual-glow-one"></div><div className="auth-visual-glow auth-visual-glow-two"></div>
-        <div className="auth-food-orbit"><div className="auth-food-orbit-inner"><img src="images/home-img-2.png" alt="Fresh BittyBites kitchen special" /></div><span className="auth-food-spark auth-food-spark-one">✦</span><span className="auth-food-spark auth-food-spark-two">✧</span></div>
+        <div className="auth-food-orbit"><div className="auth-food-orbit-inner"><img src="/images/home-img-2.png" alt="Fresh BittyBites kitchen special" /></div><span className="auth-food-spark auth-food-spark-one">✦</span><span className="auth-food-spark auth-food-spark-two">✧</span></div>
         <div className="auth-visual-copy"><span className="auth-visual-kicker"><i className="fas fa-chart-line"></i> RESTAURANT OPERATIONS</span><h2>Every order,<br />right on <em>time.</em></h2><p>A dedicated place to follow new orders and keep service moving.</p><div className="auth-rating"><span>●</span><b>BittyBites admin portal</b></div></div>
         <span className="auth-visual-footnote">RESTAURANT ADMINISTRATION</span>
       </aside>
