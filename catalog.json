@@ -30,6 +30,7 @@
     { "name": "Air Fried Chicken Wings", "price": 169, "image": "images/menu-12.jpg", "description": "The wings you would eat a lot." },
     { "name": "Dark Chocolate", "price": 10, "image": "images/dark-chocolate.svg", "description": "A rich, smooth dark chocolate treat with deep cocoa flavor." },
     { "name": "Fudgy Brownie", "price": 89, "image": "images/fudgy-brownie.svg", "description": "A warm, soft-centered brownie finished with a silky chocolate drizzle." },
-    { "name": "Chocolate Milkshake", "price": 99, "image": "images/chocolate-milkshake.svg", "description": "A cool, creamy chocolate shake topped with whipped cream and cocoa." }
+    { "name": "Chocolate Milkshake", "price": 99, "image": "images/chocolate-milkshake.svg", "description": "A cool, creamy chocolate shake topped with whipped cream and cocoa." },
+    { "name": "Caramel Custard", "price": 89, "image": "images/caramel-custard.svg", "description": "Silky baked custard with a golden caramel crown and a delicate vanilla finish." }
   ]
 }
