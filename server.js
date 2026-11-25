@@ -59,14 +59,9 @@ const sessionOptions = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    sessionOptions.store = new MySQLStore({
-        host: process.env.DB_HOST || 'localhost',
-        port: Number(process.env.DB_PORT || 3306),
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'bitty_bites',
-        ssl: {},
-    });
+    // Reuse the application pool so the session store inherits its TiDB TLS config.
+    // express-mysql-session's internal option filter omits `ssl` when creating its own pool.
+    sessionOptions.store = new MySQLStore({}, pool);
 }
 
 app.use(session(sessionOptions));
